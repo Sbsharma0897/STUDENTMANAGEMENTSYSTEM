@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table
+        {
+            margin:auto;
+            width:50%;
+            border:1px solid red;
+            border-collapse: collapse;
+            text-align: center;;
+
+        }
+        th,td
+        {
+          padding:6px;  
+          border:1px solid red;
+        }
+        tr>th
+        {
+            background-color: green;
+            font-weight: bold;
+            font-size: 20px;;
+        }
+        tr>td
+        {
+            font-size: 17px;
+            
+        }
+        img
+        {
+            width:100%;
+        }
+        .navbar
+        {
+            display:flex;
+            justify-content: flex-end;
+            background-color: rgb(108, 105, 105);
+            gap:20px;
+            padding:2px;
+            align-items: center;
+        }
+        .navbar>div
+        {
+            display:flex;
+        }
+        a
+        {
+            margin-right: auto;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="dashboard.html">dashboard</a>
+        <div class="box1">
+            <p>Batch FW18:</p>
+            <p>0</p>
+        </div>
+        <div class="box2">
+            <p>Batch FW17:</p>
+            <p>0</p>
+        </div>
+        <div class="box3">
+            <p>Batch FW16:</p>
+            <p>0</p>
+        </div>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>batch</th>
+            <th>unit</th>
+            <th>course</th>
+            <th>delete</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+       
+       
+
+    </table>
+    
+</body>
+</html>
+<script>
+
+var array = JSON.parse(localStorage.getItem("database")) || []
+
+display(array)
+calculate()
+
+function display(array)
+{
+    document.querySelector("tbody").innerHTML=null
+    array.forEach(function(elem)
+    {
+    var tr=document.createElement("tr")
+
+    var name=document.createElement("td")
+    name.innerText=elem.name
+
+    var course=document.createElement("td")
+    course.innerText=elem.course
+    
+    var batch=document.createElement("td")
+    batch.innerText=elem.batch
+
+    var unit=document.createElement("td")
+    unit.innerText=elem.unit
+
+    var image=document.createElement("img")
+    image.src=elem.image
+
+    var imagebox=document.createElement("td")
+    imagebox.append(image)
+
+    var del=document.createElement("button")
+    del.innerText="Delete"
+    del.addEventListener("click",function()
+    {
+        delfun(elem)
+    })
+
+    var delbox=document.createElement("td")
+    delbox.append(del)
+
+    tr.append(imagebox,name,batch,unit,course,delbox)
+    
+    document.querySelector("tbody").append(tr)
+
+
+
+    })
+}
+
+function delfun(elem)
+{
+   var newarray=[]
+   var trash=JSON.parse(localStorage.getItem("trash"))||[]
+
+  array=array.filter(function(x)
+  {
+    if(elem.name!=x.name)
+    {
+        return x;
+
+    }
+    else
+    {
+        trash.push(x)
+        localStorage.setItem("trash", JSON.stringify(trash))
+    }
+  })
+  localStorage.setItem("database", JSON.stringify(array))
+  display(array)
+  calculate()
+}
+
+
+function calculate()
+    {
+        var array = JSON.parse(localStorage.getItem("database")) || []
+         
+        var obj={
+            "fw18":0,
+            "fw17":0,
+            "fw16":0,
+        }
+        for(var i=0;i<array.length;i++)
+        {
+            obj[array[i].batch]++
+        }
+        document.querySelector(".box1").innerHTML=
+        ` <p>Batch FW18:</p>
+            <p>${obj.fw18}</p>`
+            document.querySelector(".box2").innerHTML=
+        ` <p>Batch FW17:</p>
+            <p>${obj.fw17}</p>`
+            document.querySelector(".box3").innerHTML=
+        ` <p>Batch FW16:</p>
+            <p>${obj.fw16}</p>`
+    }
+</script>
